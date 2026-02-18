@@ -53,3 +53,4 @@ jobs:
             `open_project_directory-v${{ github.event.inputs.version }}.au2pkg.zip`をダウンロードし、AviUtl2のプレビューにドラッグ&ドロップしてください。
           files: |
             ./release/open_project_directory-v*.au2pkg.zip
+            ./release/catalog.json
