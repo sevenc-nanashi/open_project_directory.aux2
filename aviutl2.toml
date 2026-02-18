@@ -39,7 +39,7 @@ package_template = "./release/package.txt"
 [catalog]
 id = "sevenc-nanashi.open_project_directory-aux2"
 name = "open_project_directory.aux2"
-summary = "「プロジェクトフォルダを開く」ボタンを追加する汎用プラグイン"
+summary = "「プロジェクトファイルのフォルダを開く」ボタンを追加する汎用プラグイン"
 author = "Nanashi."
 type = "common"
 description = { type = "url", url = "https://raw.githubusercontent.com/sevenc-nanashi/open_project_directory-aux2/main/README.md" }
