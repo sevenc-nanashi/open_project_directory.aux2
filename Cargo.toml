@@ -1,0 +1,12 @@
+[package]
+name = "open-project-directory-aux2"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/sevenc-nanashi/open_project_directory.aux2"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+aviutl2 = "0.17.0"

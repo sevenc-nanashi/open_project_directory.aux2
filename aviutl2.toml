@@ -1,0 +1,48 @@
+#:schema ./.aviutl2-cli/aviutl2.schema.json
+
+# 設定ファイルについては https://github.com/sevenc-nanashi/aviutl2-cli を参照してください。
+[project]
+name = "open_project_directory"
+version = "0.1.0"
+
+[artifacts."open_project_directory.aux2"]
+enabled = true
+destination = "Plugin/open_project_directory.aux2"
+
+[artifacts."open_project_directory.aux2".profiles.debug]
+build = "cargo build"
+source = "target/debug/open_project_directory_aux2.dll"
+enabled = true
+
+[artifacts."open_project_directory.aux2".profiles.release]
+build = ["cargo build --release"]
+source = "target/release/open_project_directory_aux2.dll"
+enabled = true
+
+[artifacts."English.aul2"]
+enabled = false
+source = "https://raw.githubusercontent.com/aviutl2/aviutl2_community_translation/refs/heads/main/locales/community_en.aul2"
+destination = "Language/English.aul2"
+profiles = { debug = { enabled = true } }
+
+[artifacts."English.open_project_directory.aul2"]
+source = "./i18n/English.open_project_directory.aul2"
+destination = "Language/English.open_project_directory.aul2"
+
+[development]
+aviutl2_version = "latest"
+
+[release]
+prebuild = ["cargo about generate ./about.hbs -o ./release/package.txt"]
+package_template = "./release/package.txt"
+
+[catalog]
+id = "sevenc-nanashi.open_project_directory-aux2"
+name = "open_project_directory.aux2"
+summary = "「プロジェクトフォルダを開く」ボタンを追加する汎用プラグイン"
+author = "Nanashi."
+type = "common"
+description = { type = "url", url = "https://raw.githubusercontent.com/sevenc-nanashi/open_project_directory-aux2/main/README.md" }
+download_source = { type = "github", owner = "sevenc-nanashi", repo = "open_project_directory-aux2" }
+license = { type = "MIT", template = false, text = { type = "file", path = "./LICENSE" } }
+homepage = "https://github.com/sevenc-nanashi/open_project_directory-aux2"
