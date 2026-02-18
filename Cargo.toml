@@ -9,4 +9,5 @@ repository = "https://github.com/sevenc-nanashi/open_project_directory.aux2"
 crate-type = ["cdylib"]
 
 [dependencies]
+arboard = "3.6.1"
 aviutl2 = "0.17.0"
