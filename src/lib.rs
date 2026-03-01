@@ -1,4 +1,4 @@
-use aviutl2::{anyhow, log};
+use aviutl2::{anyhow, tracing};
 
 static GLOBAL_EDIT_HANDLE: aviutl2::generic::GlobalEditHandle =
     aviutl2::generic::GlobalEditHandle::new();
@@ -8,23 +8,31 @@ struct OpenProjectDirectoryAux2;
 
 impl aviutl2::generic::GenericPlugin for OpenProjectDirectoryAux2 {
     fn new(_info: aviutl2::AviUtl2Info) -> aviutl2::AnyResult<Self> {
-        aviutl2::logger::LogBuilder::new()
-            .filter_level(if cfg!(debug_assertions) {
-                aviutl2::logger::LevelFilter::Debug
+        aviutl2::tracing_subscriber::fmt()
+            .with_max_level(if cfg!(debug_assertions) {
+                tracing::Level::DEBUG
             } else {
-                aviutl2::logger::LevelFilter::Info
+                tracing::Level::INFO
             })
+            .event_format(aviutl2::logger::AviUtl2Formatter)
+            .with_writer(aviutl2::logger::AviUtl2LogWriter)
             .init();
         Ok(Self)
+    }
+
+    fn plugin_info(&self) -> aviutl2::generic::GenericPluginTable {
+        aviutl2::generic::GenericPluginTable {
+            name: "open_project_directory.aux2".to_string(),
+            information: format!(
+                "Open Project Directory / v{} / https://github.com/sevenc-nanashi/open_project_directory.aux2",
+                env!("CARGO_PKG_VERSION")
+            ),
+        }
     }
 
     fn register(&mut self, registry: &mut aviutl2::generic::HostAppHandle) {
         GLOBAL_EDIT_HANDLE.init(registry.create_edit_handle());
         registry.register_menus::<Self>();
-        registry.set_plugin_information(&format!(
-            "Open Project Directory / v{} / https://github.com/sevenc-nanashi/open_project_directory.aux2",
-            env!("CARGO_PKG_VERSION")
-        ));
     }
 }
 
@@ -44,7 +52,7 @@ impl OpenProjectDirectoryAux2 {
             anyhow::anyhow!("プロジェクトファイルの親フォルダを取得できませんでした")
         })?;
 
-        log::info!("Opening project directory: {}", project_dir.display());
+        tracing::info!("Opening project directory: {}", project_dir.display());
 
         std::process::Command::new("explorer")
             .arg(project_dir)
@@ -58,7 +66,7 @@ impl OpenProjectDirectoryAux2 {
                 )
             })?;
 
-        log::info!(
+        tracing::info!(
             "Project directory opened successfully: {}",
             project_dir.display()
         );
@@ -88,7 +96,7 @@ impl OpenProjectDirectoryAux2 {
                     e
                 )
             })?;
-        log::info!(
+        tracing::info!(
             "Project directory path copied to clipboard: {}",
             project_dir.display()
         );
@@ -116,7 +124,7 @@ impl OpenProjectDirectoryAux2 {
                     e
                 )
             })?;
-        log::info!(
+        tracing::info!(
             "Project file path copied to clipboard: {}",
             project_path.display()
         );
