@@ -34,16 +34,31 @@ jobs:
           tool: cargo-binstall
 
       - name: Set up mise
-        uses: jdx/mise-action@v3
+        uses: jdx/mise-action@v4
         with:
           install: true
           experimental: true
+
+      - name: Update Cargo.toml
+        run: |
+          cargo set-version "${{ github.event.inputs.version }}"
 
       - name: Prepare release
         shell: bash
         run: |
           mkdir release
           au2 release --set-version "${{ github.event.inputs.version }}"
+
+      - name: Commit version change
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add Cargo.toml
+          git commit -m "release: v${{ github.event.inputs.version }}"
+          git tag "${{ github.event.inputs.version }}"
+
+          git push origin main
+          git push origin "${{ github.event.inputs.version }}"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

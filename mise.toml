@@ -1,3 +1,4 @@
 [tools]
 "cargo:cargo-about" = "latest"
-"github:sevenc-nanashi/aviutl2-cli" = { version = "0.7.0", bin = "au2.exe" }
+"cargo:cargo-edit" = "latest"
+"github:sevenc-nanashi/aviutl2-cli" = { version = "0.10.2", bin = "au2.exe" }

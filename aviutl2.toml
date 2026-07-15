@@ -41,11 +41,5 @@ package_information = "{name} v{version} / 「プロジェクトファイルの�
 
 [catalog]
 id = "sevenc-nanashi.open_project_directory.aux2"
-name = "open_project_directory.aux2"
-summary = "「プロジェクトファイルのフォルダを開く」ボタンを追加する汎用プラグイン"
-author = "Nanashi."
-type = "common"
-description = { type = "url", url = "https://raw.githubusercontent.com/sevenc-nanashi/open_project_directory.aux2/main/README.md" }
-download_source = { type = "github", owner = "sevenc-nanashi", repo = "open_project_directory.aux2" }
-license = { type = "MIT", template = false, text = { type = "file", path = "./LICENSE" } }
-homepage = "https://github.com/sevenc-nanashi/open_project_directory.aux2"
+download_repo = { owner = "sevenc-nanashi", repo = "open_project_directory.aux2" }
+license_path = "./LICENSE"
