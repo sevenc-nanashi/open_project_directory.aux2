@@ -129,7 +129,7 @@ impl OpenProjectDirectoryAux2 {
         let path: std::path::PathBuf = path.into();
         show_path_in_explorer(&path).map_err(|e| {
             anyhow::anyhow!(
-                "オブジェクトのファイルのフォルダをエクスプローーで開くことができませんでした ({}): {}",
+                "オブジェクトのファイルのフォルダをエクスプローラーで開くことができませんでした ({}): {}",
                 path.display(),
                 e
             )
