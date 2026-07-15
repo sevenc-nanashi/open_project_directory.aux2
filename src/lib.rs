@@ -38,7 +38,7 @@ impl aviutl2::generic::GenericPlugin for OpenProjectDirectoryAux2 {
 
 #[aviutl2::generic::menus]
 impl OpenProjectDirectoryAux2 {
-    #[edit(name = "open_project_directory.aux2\\プロジェクトファイルのフォルダを開く")]
+    #[edit(name = "open_project_directory.aux2\\プロジェクトファイルをエクスプローラーで表示")]
     fn open_project_directory(&mut self) -> aviutl2::AnyResult<()> {
         let project_path = GLOBAL_EDIT_HANDLE
             .call_edit_section(|edit_section| {
@@ -48,28 +48,13 @@ impl OpenProjectDirectoryAux2 {
             .map_err(|e| anyhow::anyhow!("編集中プロジェクト情報の取得に失敗しました: {e}"))?
             .ok_or_else(|| anyhow::anyhow!("プロジェクトファイルを先に保存してください"))?;
 
-        let project_dir = project_path.parent().ok_or_else(|| {
-            anyhow::anyhow!("プロジェクトファイルの親フォルダを取得できませんでした")
+        show_path_in_explorer(&project_path).map_err(|e| {
+            anyhow::anyhow!(
+                "プロジェクトファイルのフォルダをエクスプローラーで開くことができませんでした ({}): {}",
+                project_path.display(),
+                e
+            )
         })?;
-
-        tracing::info!("Opening project directory: {}", project_dir.display());
-
-        std::process::Command::new("explorer")
-            .arg(project_dir)
-            .spawn()
-            .map(|_| ())
-            .map_err(|e| {
-                anyhow::anyhow!(
-                    "エクスプローラーの起動に失敗しました ({}): {}",
-                    project_dir.display(),
-                    e
-                )
-            })?;
-
-        tracing::info!(
-            "Project directory opened successfully: {}",
-            project_dir.display()
-        );
 
         Ok(())
     }
@@ -130,6 +115,111 @@ impl OpenProjectDirectoryAux2 {
         );
         Ok(())
     }
+
+    #[object_item(name = "open_project_directory.aux2\\ファイルのフォルダを開く")]
+    fn open_file_directory(
+        &mut self,
+        object: aviutl2::generic::ObjectHandle,
+        effect: &str,
+        index: usize,
+        item: &str,
+    ) -> aviutl2::AnyResult<()> {
+        let path = GLOBAL_EDIT_HANDLE
+            .call_read_section(|read| read.get_object_effect_item(object, effect, index, item))??;
+        let path: std::path::PathBuf = path.into();
+        show_path_in_explorer(&path).map_err(|e| {
+            anyhow::anyhow!(
+                "オブジェクトのファイルのフォルダをエクスプローーで開くことができませんでした ({}): {}",
+                path.display(),
+                e
+            )
+        })?;
+
+        Ok(())
+    }
+
+    #[object_item(name = "open_project_directory.aux2\\ファイルのフォルダのパスをコピー")]
+    fn copy_file_directory(
+        &mut self,
+        object: aviutl2::generic::ObjectHandle,
+        effect: &str,
+        index: usize,
+        item: &str,
+    ) -> aviutl2::AnyResult<()> {
+        let path = GLOBAL_EDIT_HANDLE
+            .call_read_section(|read| read.get_object_effect_item(object, effect, index, item))??;
+        let path: std::path::PathBuf = path.into();
+        let dir = path.parent().ok_or_else(|| {
+            anyhow::anyhow!(
+                "オブジェクトのファイルの親フォルダを取得できませんでした ({}): {}",
+                path.display(),
+                path.display()
+            )
+        })?;
+        arboard::Clipboard::new()
+            .and_then(|mut clipboard| clipboard.set_text(dir.to_string_lossy().to_string()))
+            .map_err(|e| {
+                anyhow::anyhow!(
+                    "クリップボードへのコピーに失敗しました ({}): {}",
+                    dir.display(),
+                    e
+                )
+            })?;
+        tracing::info!("File directory path copied to clipboard: {}", dir.display());
+        Ok(())
+    }
+
+    #[object_item(name = "open_project_directory.aux2\\ファイルのパスをコピー")]
+    fn copy_file_path(
+        &mut self,
+        object: aviutl2::generic::ObjectHandle,
+        effect: &str,
+        index: usize,
+        item: &str,
+    ) -> aviutl2::AnyResult<()> {
+        let path = GLOBAL_EDIT_HANDLE
+            .call_read_section(|read| read.get_object_effect_item(object, effect, index, item))??;
+        let path: std::path::PathBuf = path.into();
+        arboard::Clipboard::new()
+            .and_then(|mut clipboard| clipboard.set_text(path.to_string_lossy().to_string()))
+            .map_err(|e| {
+                anyhow::anyhow!(
+                    "クリップボードへのコピーに失敗しました ({}): {}",
+                    path.display(),
+                    e
+                )
+            })?;
+        tracing::info!("File path copied to clipboard: {}", path.display());
+        Ok(())
+    }
+}
+
+fn show_path_in_explorer(path: &std::path::Path) -> aviutl2::AnyResult<()> {
+    if !path.exists() {
+        return Err(anyhow::anyhow!(
+            "指定されたパスが存在しません: {}",
+            path.display()
+        ));
+    }
+
+    tracing::info!("Opening path in explorer: {}", path.display());
+
+    std::process::Command::new("explorer")
+        .arg("/select,")
+        .arg(path)
+        .spawn()
+        .map(|_| ())
+        .map_err(|e| {
+            anyhow::anyhow!(
+                "エクスプローラーの起動に失敗しました ({}): {}",
+                path.display(),
+                e
+            )
+        })?;
+
+    tracing::info!("Path opened successfully in explorer: {}", path.display());
+
+    Ok(())
 }
 
 aviutl2::register_generic_plugin!(OpenProjectDirectoryAux2);
