@@ -1,4 +1,10 @@
-[open_project_directory.aux2]
-open_project_directory.aux2\プロジェクトファイルのフォルダを開く=open_project_directory.aux2\Open project file folder
-open_project_directory.aux2\プロジェクトファイルのフォルダのパスをコピー=open_project_directory.aux2\Copy project file folder path
-open_project_directory.aux2\プロジェクトファイルのパスをコピー=open_project_directory.aux2\Copy project file path
+[Language]
+Information=open_project_directory.aux2 (English) - https://github.com/sevenc-nanashi/open_project_directory.aux2
+
+[Menu]
+プロジェクトファイルをエクスプローラーで表示=Show project file in Explorer
+プロジェクトファイルのフォルダのパスをコピー=Copy project file folder path
+プロジェクトファイルのパスをコピー=Copy project file path
+ファイルのフォルダを開く=Open file folder
+ファイルのフォルダのパスをコピー=Copy file folder path
+ファイルのパスをコピー=Copy file path
